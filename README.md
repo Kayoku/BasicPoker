@@ -8,6 +8,6 @@ avoir un retour sur la valeur de cette branche
 
 # Reference
 
-http://www.dudziak.com/dudziak-fictitious_play.pdf
-https://arxiv.org/pdf/1603.01121.pdf
-
+Poker 1v1 : http://www.dudziak.com/dudziak-fictitious_play.pdf
+NFPS : https://arxiv.org/pdf/1603.01121.pdf
+DQN : http://www.teach.cs.toronto.edu/~csc2542h/fall/material/csc2542f16_dqn.pdf
