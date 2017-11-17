@@ -16,3 +16,15 @@ class PK_Game_State(Enum):
 class PK_Win(Enum):
     PLAYER1_WIN = 0
     PLAYER2_WIN = 1
+
+def possibles_states():
+    return  [(),
+             (PK_State.RAISE), 
+             (PK_State.RAISE, PK_State.RAISE),
+             (PK_State.RAISE, PK_State.RAISE, PK_State.RAISE),
+             (PK_State.RAISE, PK_State.RAISE, PK_State.RAISE, PK_State.RAISE),
+             (PK_State.CHECK),
+             (PK_State.CHECK, PK_State.RAISE),
+             (PK_State.CHECK, PK_State.RAISE, PK_State.RAISE),
+             (PK_State.CHECK, PK_State.RAISE, PK_State.RAISE, PK_State.RAISE),
+             (PK_State.CHECK, PK_State.RAISE, PK_State.RAISE, PK_State.RAISE, PK_State.RAISE)]
