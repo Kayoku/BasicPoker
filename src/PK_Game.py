@@ -1,27 +1,8 @@
 # Class PK_Game
 
-from enum import Enum
 import random
-
-class PK_State(Enum):
-    START = 0
-    FOLD  = 1 
-    CHECK = 2
-    RAISE = 3
-
-class PK_Player:
-
-    def __init__(self, game):
-        self.hand = -1
-        self.game = game
-        self.state = PK_State.START
-
-    def play(self):
-        possibles_choice = [PK_State.FOLD, PK_State.CHECK]
-        if self.game.history.count(PK_State.RAISE) < 4:
-            possibles_choice.append(PK_State.RAISE)
-        self.state = possibles_choice[random.randint(0, len(possibles_choice)-1)]
-        return self.state
+from PK_State import PK_State
+from PK_Player import PK_Player
 
 class PK_Game:
 
@@ -40,7 +21,7 @@ class PK_Game:
     def game_end(self):
         if len(self.history) > 0 and self.history[-1] == PK_State.FOLD:
             return True
-        elif (len(self.history) > 1 and (self.history[-1] == PK_State.CHECK and (self.history[-2] == PK_State.CHECK or self.history[-2] == PK_State.PK_State.RAISE))):
+        elif (len(self.history) > 1 and (self.history[-1] == PK_State.CHECK and (self.history[-2] == PK_State.CHECK or self.history[-2] == PK_State.RAISE))):
             return True
         else:
             return False
