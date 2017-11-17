@@ -8,6 +8,11 @@ class PK_State(Enum):
     CHECK = 2
     RAISE = 3
 
+class PK_Game_State(Enum):
+    BEGIN   = 0
+    PLAYING = 1
+    ENDED   = 2
+
 class PK_Win(Enum):
     PLAYER1_WIN = 0
     PLAYER2_WIN = 1

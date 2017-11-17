@@ -1,18 +1,19 @@
 # Class PK_Game
 
 import random
-from PK_State import PK_State
+from PK_State import PK_State, PK_Game_State, PK_Win
 from PK_Player import PK_Player
 
 class PK_Game_Saver:
 
-    def __init__(self, hand_player1, hand_player2, history, state_player1, state_player2, next_player):
+    def __init__(self, hand_player1, hand_player2, history, state_player1, state_player2, next_player, game_state):
         self.hand_player1 = hand_player1
         self.hand_player2 = hand_player2
         self.history = history
         self.state_player1 = state_player1
         self.state_player2 = state_player2
         self.next_player = next_player
+        self.game_state = game_state
 
 class PK_Game:
 
@@ -41,10 +42,10 @@ class PK_Game:
     def reset_state(self):
         self.history = []
         self.next_player = random.randint(0, 1) 
-        self.player1.hand = -1
-        self.player2.hand = -1
+        self.random_card()
         self.player1.state = PK_State.START
         self.player2.state = PK_State.START
+        self.game_state = PK_Game_State.BEGIN
 
     """
     Distribue deux cartes aux deux joueurs
@@ -59,19 +60,18 @@ class PK_Game:
 
     """
     Permet de savoir qui a gagné
-    Renvoie False si c'est le joueur 1
-    Renvoie True si c'est le joueur 2
+    Renvoie PK_Win.PLAYER1_WIN ou PK_Win.PLAYER2_WIN 
     """
     def winner(self):
         if self.player1.state == PK_State.FOLD:
-            return True 
+            return PK_Win.PLAYER2_WIN 
         elif self.player2.state == PK_State.FOLD:
-            return False 
+            return PK_Win.PLAYER1_WIN 
         else:
             if self.player1.hand > self.player2.hand:
-                return False 
+                return PK_Win.PLAYER1_WIN 
             else:
-                return True 
+                return PK_Win.PLAYER2_WIN 
 
     """
     Permet de remettre le jeu dans un état voulu
@@ -85,30 +85,39 @@ class PK_Game:
         else:
             self.next_player = (saver.start_player + 1) % 2
         self.history = saver.history 
+        self.game_state = saver.game_state
+
+    """
+    Permet de jouer le prochain coup de la partie
+    Ne fait rien si la partie est terminée
+    Retourne 1 si la partie est en cours
+             0 si la partie est terminé
+    """
+    def run_one_move(self):
+        if self.game_state == PK_Game_State.ENDED:
+            return 0
+
+        if self.game_state == PK_Game_State.BEGIN:
+            self.game_state = PK_Game_State.PLAYING
+
+        if self.next_player:
+            self.history.append(self.player1.play())
+        else:
+            self.history.append(self.player2.play())
+
+        self.next_player = (self.next_player + 1) % 2
+
+        if self.game_end():
+            self.game_state = PK_Game_State.ENDED
 
     """
     Joue une partie avec tous les joueurs
     """
     def run_game(self):
-        self.reset_state()
-        #self.display_state()
-        self.random_card()
-
-        while not self.game_end():
-            if self.next_player:
-                self.history.append(self.player1.play()) 
-            else:
-                self.history.append(self.player2.play())
-            #self.display_state()
-            self.next_player = (self.next_player + 1) % 2
+        while self.game_state != PK_Game_State.ENDED:
+            self.run_one_move()
+            self.display_state()
  
-        """
-        if self.winner():
-            print("Player 2 win the game.")
-        else:
-            print("Player 1 win the game.")
-        """
-
     """
     Affiche l'état du jeu
     """
