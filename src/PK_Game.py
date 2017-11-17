@@ -4,12 +4,21 @@ import random
 from PK_State import PK_State
 from PK_Player import PK_Player
 
+class PK_Game_Saver:
+
+    def __init__(self, hand_player1, hand_player2, history, state_player1, state_player2, next_player):
+        self.hand_player1 = hand_player1
+        self.hand_player2 = hand_player2
+        self.history = history
+        self.state_player1 = state_player1
+        self.state_player2 = state_player2
+        self.next_player = next_player
+
 class PK_Game:
 
     def __init__(self):
         self.player1 = PK_Player(self)
         self.player2 = PK_Player(self)
-        self.nb_game = 0
         self.reset_state()
 
     """
@@ -31,7 +40,7 @@ class PK_Game:
     """
     def reset_state(self):
         self.history = []
-        self.next_player = self.nb_game % 2 
+        self.next_player = random.randint(0, 1) 
         self.player1.hand = -1
         self.player2.hand = -1
         self.player1.state = PK_State.START
@@ -65,6 +74,19 @@ class PK_Game:
                 return True 
 
     """
+    Permet de remettre le jeu dans un état voulu
+    """
+    def set_state(self, saver):
+        self.reset_state()
+        self.player1.hand = saver.hand_player1
+        self.player2.hand = saver.hand_player2
+        if len(saver.history) % 2 == 0:
+            self.next_player = saver.start_player
+        else:
+            self.next_player = (saver.start_player + 1) % 2
+        self.history = saver.history 
+
+    """
     Joue une partie avec tous les joueurs
     """
     def run_game(self):
@@ -80,8 +102,6 @@ class PK_Game:
             #self.display_state()
             self.next_player = (self.next_player + 1) % 2
  
-        self.nb_game += 1
-
         """
         if self.winner():
             print("Player 2 win the game.")
@@ -93,8 +113,6 @@ class PK_Game:
     Affiche l'état du jeu
     """
     def display_state(self):
-        print("Game: ", end='')
-        print(self.nb_game)
         print("Player 1: ", end='')
         print(self.player1.hand, end=' ')
         print(self.player1.state)
