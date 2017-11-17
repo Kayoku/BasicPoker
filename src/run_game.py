@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 
 from PK_Game import PK_Game
+from PK_Handler import PK_Handler
 
-game = PK_Game()
-game.run_game()
+handler = PK_Handler()
+
+handler.run(2000)

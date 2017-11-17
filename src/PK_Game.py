@@ -32,6 +32,10 @@ class PK_Game:
     def reset_state(self):
         self.history = []
         self.next_player = self.nb_game % 2 
+        self.player1.hand = -1
+        self.player2.hand = -1
+        self.player1.state = PK_State.START
+        self.player2.state = PK_State.START
 
     """
     Distribue deux cartes aux deux joueurs
@@ -45,11 +49,27 @@ class PK_Game:
         self.player2.hand = card2
 
     """
+    Permet de savoir qui a gagné
+    Renvoie False si c'est le joueur 1
+    Renvoie True si c'est le joueur 2
+    """
+    def winner(self):
+        if self.player1.state == PK_State.FOLD:
+            return True 
+        elif self.player2.state == PK_State.FOLD:
+            return False 
+        else:
+            if self.player1.hand > self.player2.hand:
+                return False 
+            else:
+                return True 
+
+    """
     Joue une partie avec tous les joueurs
     """
     def run_game(self):
         self.reset_state()
-        self.display_state()
+        #self.display_state()
         self.random_card()
 
         while not self.game_end():
@@ -57,10 +77,17 @@ class PK_Game:
                 self.history.append(self.player1.play()) 
             else:
                 self.history.append(self.player2.play())
-            self.display_state()
+            #self.display_state()
             self.next_player = (self.next_player + 1) % 2
-
+ 
         self.nb_game += 1
+
+        """
+        if self.winner():
+            print("Player 2 win the game.")
+        else:
+            print("Player 1 win the game.")
+        """
 
     """
     Affiche l'état du jeu
@@ -74,5 +101,3 @@ class PK_Game:
         print("Player 2: ", end='')
         print(self.player2.hand, end=' ')
         print(self.player2.state)
-        print("===")
-

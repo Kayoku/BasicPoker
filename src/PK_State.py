@@ -7,3 +7,7 @@ class PK_State(Enum):
     FOLD  = 1
     CHECK = 2
     RAISE = 3
+
+class PK_Win(Enum):
+    PLAYER1_WIN = 0
+    PLAYER2_WIN = 1
