@@ -74,6 +74,34 @@ class PK_Game:
                 return PK_Win.PLAYER2_WIN 
 
     """
+    Permet d'avoir le gain du joueur gagnant
+    si game fini
+     - 0 raise : 20
+     - 1 raise : 40
+     - 2 raise : 60
+     - 3 raise : 80
+     - 4 raise : 100
+    sinon
+     - 0
+    """
+    def gain(self):
+        nb_raise = self.history.count(PK_State.RAISE)
+
+        if self.game_state == PK_Game_State.ENDED:
+            if nb_raise == 0:
+                return 20
+            elif nb_raise == 1:
+                return 40
+            elif nb_raise == 2:
+                return 60
+            elif nb_raise == 3:
+                return 80
+            else
+                return 100
+        else:
+            return 0
+
+    """
     Permet de remettre le jeu dans un état voulu
     """
     def set_state(self, saver):

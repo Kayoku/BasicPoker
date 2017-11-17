@@ -16,6 +16,7 @@ class PK_Player_Q:
             2/3 actions (FOLD - CHECK - RAISE)
         """
         self.qtable = {}
+        self.rtable = {}
 
         for i in range(len(possibles_states())):
             if i == 4 or i == 9:
@@ -27,7 +28,6 @@ class PK_Player_Q:
         possibles_choice = [PK_State.FOLD, PK_State.CHECK]
         if self.game.history.count(PK_State.RAISE) < 4:
             possibles_choice.append(PK_State.RAISE)
-
 
         self.state = possibles_choice[random.randint(0, len(possibles_choice)-1)]
         return self.state
