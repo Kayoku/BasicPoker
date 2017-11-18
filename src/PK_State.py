@@ -3,10 +3,10 @@
 from enum import Enum
 
 class PK_State(Enum):
-    START = 0
     FOLD  = 1
     CHECK = 2
     RAISE = 3
+    START = 0
 
 class PK_Game_State(Enum):
     BEGIN   = 0

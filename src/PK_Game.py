@@ -1,8 +1,8 @@
 # Class PK_Game
 
 import random
-from PK_State import PK_State, PK_Game_State, PK_Win
-from PK_Player import PK_Player
+from PK_State import * 
+from PK_Player_Random import PK_Player_Random
 
 class PK_Game_Saver:
 
@@ -18,9 +18,26 @@ class PK_Game_Saver:
 class PK_Game:
 
     def __init__(self):
-        self.player1 = PK_Player(self)
-        self.player2 = PK_Player(self)
+        self.player1 = PK_Player_Random(self)
+        self.player2 = PK_Player_Random(self)
         self.reset_state()
+
+    """
+    Permet de changer les players
+    """
+    def set_players(self, player1, player2):
+        self.player1 = player1
+        self.player2 = player2
+
+    """
+    Permet de se mettre dans un état aléatoire du jeu
+    (jamais dans un état terminal)
+    """
+    def play_random(self):        
+        reset_state()
+        history = possibles_states()[random.randint(0, 9)] 
+        for move in history:
+            run_one_move(move) 
 
     """
     Permet de savoir si le round en cours est terminé
@@ -117,21 +134,30 @@ class PK_Game:
 
     """
     Permet de jouer le prochain coup de la partie
+    ou de faire jouer un coup précis par le prochain joueur
     Ne fait rien si la partie est terminée
     Retourne 1 si la partie est en cours
              0 si la partie est terminé
     """
-    def run_one_move(self):
+    def run_one_move(self, move = PK_State.START):
         if self.game_state == PK_Game_State.ENDED:
             return 0
 
         if self.game_state == PK_Game_State.BEGIN:
             self.game_state = PK_Game_State.PLAYING
 
-        if self.next_player:
-            self.history.append(self.player1.play())
+        # Le joueur joue son coup
+        if move == PK_State.START:
+            if self.next_player:
+                self.history.append(self.player1.play())
+            else:
+                self.history.append(self.player2.play())
+        # Le joueur joue le coup en arg
         else:
-            self.history.append(self.player2.play())
+            if self.next_player:
+                self.history.append(self.player1.make_play(move))
+            else:
+                self.history.append(self.player2.make_play(move))
 
         self.next_player = (self.next_player + 1) % 2
 
