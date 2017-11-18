@@ -17,13 +17,14 @@ class PK_Player_Q(PK_Player):
         """
         self.qtable = qtable 
 
-    def play(self):
+    def play(self, train=False):
         possibles_choice = [PK_State.FOLD, PK_State.CHECK]
         if self.game.history.count(PK_State.RAISE) < 4:
             possibles_choice.append(PK_State.RAISE)
 
         what_move = self.qtable[tuple(self.history)][self.hand]
-        index_max = np.argmax(what_move)
+        what_move_array = np.array(what_move)
+        index_max = np.random.choice(np.floatnonzero(what_move_array == what_move_array.max())
 
         if index_max == 0:
             self.state = PK_State.FOLD

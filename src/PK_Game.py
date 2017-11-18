@@ -34,10 +34,29 @@ class PK_Game:
     (jamais dans un état terminal)
     """
     def play_random(self):        
-        reset_state()
+        self.reset_state()
         history = possibles_states()[random.randint(0, 9)] 
         for move in history:
-            run_one_move(move) 
+            self.run_one_move(move) 
+
+    """
+    Permet de générer une sauvegarde du jeu
+    """
+    def get_saver(self):
+        return PK_Game_Saver(self.player1.hand, self.player2.hand, self.history, self.player1.state, self.player2.state, self.next_player, self.game_state) 
+
+    """
+    Permet de savoir quels coups sont possibles
+    dans l'état actuel
+    """
+    def possibles_moves(self):
+        if self.game_state == PK_Game_State.ENDED:
+            return []
+
+        possibles_moves = [PK_State.FOLD, PK_State.CHECK]
+        if self.history.count(PK_State.RAISE) < 4:
+            possibles_moves.append(PK_State.RAISE)
+        return possibles_moves
 
     """
     Permet de savoir si le round en cours est terminé
@@ -78,8 +97,12 @@ class PK_Game:
     """
     Permet de savoir qui a gagné
     Renvoie PK_Win.PLAYER1_WIN ou PK_Win.PLAYER2_WIN 
+    ou None si la partie n'est pas terminée
     """
     def winner(self):
+        if self.game_state != PK_Game_State.ENDED:
+            return None
+
         if self.player1.state == PK_State.FOLD:
             return PK_Win.PLAYER2_WIN 
         elif self.player2.state == PK_State.FOLD:
@@ -113,7 +136,7 @@ class PK_Game:
                 return 60
             elif nb_raise == 3:
                 return 80
-            else
+            else:
                 return 100
         else:
             return 0

@@ -1,11 +1,13 @@
 # Class PK_Q_Learning.py
 
 from PK_Player_Q import PK_Player_Q
+from PK_Game import PK_Game_Saver
 
 class PK_Q_Learning:
 
-    def __init__(self, y, game):
+    def __init__(self, y, e, game):
         self.y = y
+        self.e = 0.1 # random probability
         self.game = game
         self.qtable = {}
         for i in range(len(possibles_states())):
@@ -19,3 +21,6 @@ class PK_Q_Learning:
         for _ in range(iterations):
             # Génération d'un état du jeu aléatoire
             self.game.play_random()
+
+            # Calcul du nouveau q
+            q = self.qtable[tuple(self.game.history)][self.hand] 
