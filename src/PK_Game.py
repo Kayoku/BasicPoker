@@ -116,11 +116,11 @@ class PK_Game:
     """
     Permet d'avoir le gain du joueur gagnant
     si game fini
-     - 0 raise : 20
-     - 1 raise : 40
-     - 2 raise : 60
-     - 3 raise : 80
-     - 4 raise : 100
+     - 0 raise : 1
+     - 1 raise : 2
+     - 2 raise : 3
+     - 3 raise : 4
+     - 4 raise : 5
     sinon
      - 0
     """
@@ -129,15 +129,15 @@ class PK_Game:
 
         if self.game_state == PK_Game_State.ENDED:
             if nb_raise == 0:
-                return 20
+                return 1
             elif nb_raise == 1:
-                return 40
+                return 2
             elif nb_raise == 2:
-                return 60
+                return 3
             elif nb_raise == 3:
-                return 80
+                return 4
             else:
-                return 100
+                return 5
         else:
             return 0
 
@@ -186,6 +186,9 @@ class PK_Game:
 
         if self.game_end():
             self.game_state = PK_Game_State.ENDED
+            return 0
+
+        return 1
 
     """
     Joue une partie avec tous les joueurs
