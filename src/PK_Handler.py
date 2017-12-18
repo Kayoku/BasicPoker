@@ -5,9 +5,9 @@ from PK_State import PK_Win
 
 class PK_Handler:
 
-    def __init__(self):
+    def __init__(self, game):
         self.stat = [0, 0]
-        self.game = PK_Game() 
+        self.game = game 
 
     def run(self, iterations):
         for _ in range(iterations):
@@ -19,3 +19,6 @@ class PK_Handler:
                 self.stat[1] += 1
 
             print(self.stat)
+
+    def train(self, iterations):
+        #for _ in range(iterations):

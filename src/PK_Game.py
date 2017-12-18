@@ -30,6 +30,18 @@ class PK_Game:
         self.player2 = player2
 
     """
+    Permet de changer le joueur 1
+    """
+    def set_player1(self, player1):
+        self.player1 = player1
+
+    """
+    Permet de changer le joueur 2
+    """
+    def set_player2(self, player2):
+        self.player2 = player2
+
+    """
     Permet de se mettre dans un état aléatoire du jeu
     (jamais dans un état terminal)
     """
@@ -64,10 +76,10 @@ class PK_Game:
      - raise + 1 coup check 
      - double check
     """
-    def game_end(self):
-        if len(self.history) > 0 and self.history[-1] == PK_State.FOLD:
+    def game_end(self, h=self.history):
+        if len(h) > 0 and h[-1] == PK_State.FOLD:
             return True
-        elif (len(self.history) > 1 and (self.history[-1] == PK_State.CHECK and (self.history[-2] == PK_State.CHECK or self.history[-2] == PK_State.RAISE))):
+        elif (len(h) > 1 and (h[-1] == PK_State.CHECK and (h[-2] == PK_State.CHECK or h[-2] == PK_State.RAISE))):
             return True
         else:
             return False
@@ -197,6 +209,25 @@ class PK_Game:
         while self.game_state != PK_Game_State.ENDED:
             self.run_one_move()
             self.display_state()
+
+    """
+    Renvoie des valeurs utiles à l'apprentissage
+    s1  = State suivant (None si terminal)
+    r   = reward
+    e   = terminal ou pas
+    """
+    def step(self, p, a):
+        new_state = tuple(self.history) + tuple(a)
+        e = self.game_end(new_state)
+        r = 0
+        if e:
+            r = self.gain()
+            # Si je n'ai pas gagné, c'est un malus
+            if (self.winner() == PK_Win.PLAYER1_WIN and p != self.player1) or (self.winner() == PK_Win.PLAYER2_WIN and p != self.player2):
+                r = -r
+ 
+        return new_state, r, e
+        
  
     """
     Affiche l'état du jeu
