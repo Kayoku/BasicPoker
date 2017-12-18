@@ -1,6 +1,6 @@
 # Class PK_Game
 
-import random
+import numpy as np
 from PK_State import * 
 from PK_Player_Random import PK_Player_Random
 
@@ -47,9 +47,9 @@ class PK_Game:
     """
     def play_random(self):        
         self.reset_state()
-        history = possibles_states()[random.randint(0, 9)] 
-        for move in history:
-            self.run_one_move(move) 
+        history = possibles_states()[np.random.randint(0, 10)] 
+        for m in history:
+            self.run_one_move(move=m) 
 
     """
     Permet de générer une sauvegarde du jeu
@@ -76,7 +76,7 @@ class PK_Game:
      - raise + 1 coup check 
      - double check
     """
-    def game_end(self, h=self.history):
+    def game_end(self, h):
         if len(h) > 0 and h[-1] == PK_State.FOLD:
             return True
         elif (len(h) > 1 and (h[-1] == PK_State.CHECK and (h[-2] == PK_State.CHECK or h[-2] == PK_State.RAISE))):
@@ -89,7 +89,7 @@ class PK_Game:
     """
     def reset_state(self):
         self.history = []
-        self.next_player = random.randint(0, 1) 
+        self.next_player = np.random.randint(0, 2) 
         self.random_card()
         self.player1.state = PK_State.START
         self.player2.state = PK_State.START
@@ -99,10 +99,10 @@ class PK_Game:
     Distribue deux cartes aux deux joueurs
     """
     def random_card(self):
-        card1 = random.randint(1, 170)
-        card2 = random.randint(1, 170)
+        card1 = np.random.randint(1, 170)
+        card2 = np.random.randint(1, 170)
         while card1 == card2:
-            card2 = random.randint(1, 170)        
+            card2 = np.random.randint(1, 170)        
         self.player1.hand = card1
         self.player2.hand = card2
 
@@ -136,10 +136,10 @@ class PK_Game:
     sinon
      - 0
     """
-    def gain(self):
-        nb_raise = self.history.count(PK_State.RAISE)
+    def gain(self, h, fakeFinish=False):
+        nb_raise = h.count(PK_State.RAISE)
 
-        if self.game_state == PK_Game_State.ENDED:
+        if self.game_state == PK_Game_State.ENDED or fakeFinish:
             if nb_raise == 0:
                 return 1
             elif nb_raise == 1:
@@ -174,7 +174,7 @@ class PK_Game:
     Retourne 1 si la partie est en cours
              0 si la partie est terminé
     """
-    def run_one_move(self, move = PK_State.START):
+    def run_one_move(self, train=False, move=PK_State.START):
         if self.game_state == PK_Game_State.ENDED:
             return 0
 
@@ -184,9 +184,9 @@ class PK_Game:
         # Le joueur joue son coup
         if move == PK_State.START:
             if self.next_player:
-                self.history.append(self.player1.play())
+                self.history.append(self.player1.play(train))
             else:
-                self.history.append(self.player2.play())
+                self.history.append(self.player2.play(train))
         # Le joueur joue le coup en arg
         else:
             if self.next_player:
@@ -196,7 +196,7 @@ class PK_Game:
 
         self.next_player = (self.next_player + 1) % 2
 
-        if self.game_end():
+        if self.game_end(self.history):
             self.game_state = PK_Game_State.ENDED
             return 0
 
@@ -205,9 +205,9 @@ class PK_Game:
     """
     Joue une partie avec tous les joueurs
     """
-    def run_game(self):
+    def run_game(self, train=False):
         while self.game_state != PK_Game_State.ENDED:
-            self.run_one_move()
+            self.run_one_move(train=train)
             self.display_state()
 
     """
@@ -217,25 +217,26 @@ class PK_Game:
     e   = terminal ou pas
     """
     def step(self, p, a):
-        new_state = tuple(self.history) + tuple(a)
-        e = self.game_end(new_state)
+        new_state = tuple(self.history) + tuple((a,))
         r = 0
-        if e:
-            r = self.gain()
+        if self.game_end(new_state):
+            r = self.gain(new_state, True)
             # Si je n'ai pas gagné, c'est un malus
             if (self.winner() == PK_Win.PLAYER1_WIN and p != self.player1) or (self.winner() == PK_Win.PLAYER2_WIN and p != self.player2):
                 r = -r
- 
-        return new_state, r, e
+
+        return new_state, r
         
  
     """
     Affiche l'état du jeu
     """
     def display_state(self):
+        """
         print("Player 1: ", end='')
         print(self.player1.hand, end=' ')
         print(self.player1.state)
         print("Player 2: ", end='')
         print(self.player2.hand, end=' ')
         print(self.player2.state)
+        """

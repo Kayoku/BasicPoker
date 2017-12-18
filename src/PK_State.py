@@ -19,11 +19,11 @@ class PK_Win(Enum):
 
 def possibles_states():
     return  [(),
-             (PK_State.RAISE), 
+             (PK_State.RAISE,), 
              (PK_State.RAISE, PK_State.RAISE),
              (PK_State.RAISE, PK_State.RAISE, PK_State.RAISE),
              (PK_State.RAISE, PK_State.RAISE, PK_State.RAISE, PK_State.RAISE),
-             (PK_State.CHECK),
+             (PK_State.CHECK,),
              (PK_State.CHECK, PK_State.RAISE),
              (PK_State.CHECK, PK_State.RAISE, PK_State.RAISE),
              (PK_State.CHECK, PK_State.RAISE, PK_State.RAISE, PK_State.RAISE),

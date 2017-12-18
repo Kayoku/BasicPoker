@@ -2,6 +2,9 @@
 # Classe permettant de lancer
 # un algorithme de renforcement
 
+import numpy as np
+from PK_State import *
+
 class QLearning:
 
     def __init__(self, game, qplayer, e, y, lr):
@@ -23,20 +26,23 @@ class QLearning:
 
         self.qplayer.probas = self.probas
 
-    def train(self):
+    def train(self, a, moves):
         # Chance de choisir un coup aléatoire
         # Si on est en apprentissage, on a une chance epsilon de choisir
         # un coup aléatoire pour explorer
-        #if train and np.random.random < self.e:
-        #    index_max = np.random.choice([i for i in range(len(what_move))])        
+        if np.random.random() < self.e:
+            a = 1 + np.random.choice([i for i in range(len(moves))])        
 
         # Si on est en apprentissage, alors on fait les actions d'apprentissage
         # selon le coup choisit
-        """
-        if train:
-            new_state = tuple(self.game.history) + tuple(self.state)
-            new_reward = # win_game ? 
-            self.probas[tuple(self.game.history)][self.hand][index_max] *= (1 - self.lr)
-            self.probas[tuple(self.game.history)][self.hand][index_max] += self.lr * (new_reward + self.y * np.max(self.probas[new_state][self.hand]))
-        """
+        s1, r = self.game.step(self.qplayer, PK_State(a))
+        current_prob = self.probas[tuple(self.game.history)][self.qplayer.hand][a-1]
 
+        current_prob *= (1 - self.lr)
+        if s1 in self.probas:
+            current_prob += self.lr * (r + self.y * np.max(self.probas[s1][self.qplayer.hand]))
+        else:
+            current_prob += self.lr * r
+
+        self.probas[tuple(self.game.history)][self.qplayer.hand][a-1] = current_prob
+        return a
