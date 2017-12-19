@@ -14,7 +14,5 @@ game.set_player1(qplayer)
 
 handler = PK_Handler(game)
 
-handler.train(3000000)
+handler.train(1000000)
 print(qplayer.probas)
-
-handler.run(2000)

@@ -1,10 +1,10 @@
 # BasicPoker
 
-1. Développer une classe joueur et une classe jeu permettant de jouer de façon
-random
-2. Développer un moyen de simuler une partie à partir d'un point précis pour
+* Développer un moyen de simuler des parties avec un seed précis (pour refaire les mêmes)
+* Fixer le problème des states sous évalués (bcp de valeur à 0)
+* Développer un moyen de simuler une partie à partir d'un point précis pour
 avoir un retour sur la valeur de cette branche
-3. Essayer de reproduire les courbes du papier http://www.dudziak.com/dudziak-fictitious_play.pdf
+* Essayer de reproduire les courbes du papier http://www.dudziak.com/dudziak-fictitious_play.pdf
 
 # Reference
 
